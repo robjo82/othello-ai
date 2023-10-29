@@ -1,7 +1,7 @@
 {
-  "name": "ci-template-project",
+  "name": "othello-ai",
   "version": "1.0.0",
-  "description": "A template project for CI/CD",
+  "description": "Pygame interface which allows you to play the Othello game with friends or against an AI. \nOur goal was to apply the theoretical knowledge learned on these different so-called artificial intelligence algorithms such as min max or alpha beta, and analyze them statistically to understand which is the best and why?",
   "scripts": {
     "semantic-release": "semantic-release"
   },
@@ -25,7 +25,7 @@
     "branches": [
       "main"
     ],
-    "repositoryUrl": "https://github.com/robjo82/ci-template.git",
+    "repositoryUrl": "https://github.com/robjo82/othello-ai.git",
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",

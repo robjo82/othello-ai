@@ -22,6 +22,16 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Update requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip freeze > requirements.txt
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add requirements.txt
+          git commit -m "Update requirements.txt" || echo "No changes to commit"
+          git push origin main || echo "No changes to push"
+
       - name: SonarCloud analysis
         uses: sonarsource/sonarcloud-github-action@master
         env:
@@ -29,7 +39,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectKey=robjo82_ci-template
+            -Dsonar.projectKey=robjo82_othello-ai
             -Dsonar.organization=robjo82
 
       - name: Semantic Release

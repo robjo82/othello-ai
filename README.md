@@ -1,29 +1,24 @@
 **Note: A French version of this README is available right after this section.**
 
-# Project Name
+# Othello AI
 
-Project description.
+Pygame interface which allows you to play the Othello game with friends or against an AI.
+
+Our goal was to apply the theoretical knowledge learned on these different so-called artificial intelligence algorithms
+such as min max or alpha beta, and analyze them statistically to understand which is the best and why?
 
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
-- [General Project Structure](#general-project-structure)
-  - [File Tree](#file-tree)
-  - [Description](#description)
+- [Characteristics](#characteristics)
+  - [Installation](#installation)
+  - [Game Modes](#game-modes)
+  - [AI Algorithms](#ai-algorithms)
+- [Best Practices](#best-practices)
   - [Best Practices on Branching](#best-practices-on-branching)
   - [Best Practices on Commits](#best-practices-on-commits)
   - [Best Practices on Pull Requests](#best-practices-on-pull-requests)
-- [Configuration Steps](#configuration-steps)
-  - [GitHub](#github)
-  - [SonarQube](#sonarqube)
-  - [SSH Configuration](#ssh-configuration)
-  - [GPG Configuration](#gpg-configuration)
-  - [CI Configuration](#ci-configuration)
-- [Customization](#customization)
-  - [Dockerfile](#dockerfile)
-  - [Procfile](#procfile)
-  - [Configuration Files](#configuration-files)
-- [NPM Scripts](#npm-scripts)
+- [Contributing](#contributing)
 - [License](#license)
 
 ---
@@ -41,41 +36,61 @@ Project description.
 - [Husky](https://typicode.github.io/husky/#/)
 - [Commitlint](https://commitlint.js.org/#/)
 - [Conventional Commits](https://www.conventionalcommits.org/)
+- [Python 3.X](https://www.python.org/)
+- [Pygame](https://www.pygame.org/news)
 
 ---
 
-## General Project Structure
+## Characteristics
 
-### File Tree
+- Using Minimax Algorithm for decision-making
+- Optimizing with Alpha-Beta pruning
+- Using memory with a transpose table to store evaluations of platter positions
+- Time management with a timeout system
+- Evaluation of tabletop positions via four personalized evaluation functions
 
-```
-.
-├── .github
-│   ├── PULL_REQUEST_TEMPLATE
-│   │   └── pull_request_template.md
-│   └── workflows
-│       └── build.yml
-├── src
-├── .gitignore
-├── Dockerfile
-├── LICENSE
-├── package.json
-├── Procfile
-└── README.md
+### Installation
+
+```bash
+git clone https://github.com/robjo82/othello-ai.git
+cd othello-ai
+pip install -r requirements.txt
+python src/main.py
 ```
 
+### Game Modes
 
-### Description
+- **Player vs Player** : Play against a friend on the same computer.
+- **Player vs AI** : Play against an AI.
+- **AI vs AI** : Watch two AIs play against each other.
 
-- `pull_request_template.md`: Pull request template.
-- `build.yml`: CI pipeline, based on GitHub Actions.
-- `src`: Folder containing the source code of the application.
-- `.gitignore`: Configuration file to ignore certain files in Git.
-- `Dockerfile`: Configuration file for creating a Docker image.
-- `LICENSE`: License file.
-- `package.json`: Configuration file for NPM, including husky and semantic-release.
-- `Procfile`: Configuration file for Heroku.
-- `README.md`: Project description file.
+### AI Algorithms
+
+**Minimax**:
+
+Minimax is a decision search algorithm for two-player games (like chess, checkers, etc.). The algorithm evaluates
+possible moves and chooses the best move, assuming that the opponent will also play optimally. Minimax uses a game tree
+to represent possible moves and a depth system to limit the search.
+
+In the Minimax algorithm, two types of nodes are evaluated:
+
+“Maximizing” nodes: The AI ​​searches for the move with the maximum value.
+“Minimizing” nodes: The AI ​​anticipates that the opponent will choose the move with the minimum value.
+
+**Alpha-Beta Pruning**:
+
+Alpha-Beta pruning is an optimization of the Minimax algorithm that reduces the number of nodes evaluated in the search
+tree. The idea is to maintain two values, Alpha and Beta, which respectively represent the best option for the player so
+far and the best option for the opponent. When traversing the tree, branches are "cut" or ignored as soon as it is
+obvious that they will not produce a better decision than the one already found.
+
+Alpha-Beta pruning allows you to search deeper in the game tree with the same calculation time, or reduce the time
+needed for a given depth.
+
+Both algorithms are often used in game programs to help AI decide which moves to make. They are particularly effective
+when the game has a limited set of possible moves and clearly defined rules for winning or losing.
+
+## Best Practices
 
 ### Best Practices on Branching
 
@@ -96,135 +111,10 @@ Project description.
 - A pull request template is available in the `.github/PULL_REQUEST_TEMPLATE/pull_request_template.md` directory.
 - Pull requests should be assigned to a reviewer.
 
----
+## Contributing
 
-## Configuration Steps
-
-### GitHub
-
-1. **Create a new repository on GitHub**: Use this template to create a new GitHub repository.
-2. **Clone the repository**: Clone the repository onto your local machine.
-
-### SonarQube
-
-1. **Create a Project**: Go to your SonarQube instance and create a new project.
-2. **Generate a Key**: Generate an API key for your project.
-3. **Create a GitHub Secret**: Go to your GitHub repository settings, then to `Secrets`, and create a new secret called `SONAR_TOKEN` with the generated API key.
-
----
-
-### SSH Configuration
-
-To clone this project, make sure you have configured your SSH keys. You should have the following files in your `~/.ssh/` directory:
-
-- `config`
-- `id_rsa_personal`
-- `id_rsa_personal.pub`
-- `id_rsa_pro`
-- `id_rsa_pro.pub`
-- `known_hosts`
-
-If you use multiple GitHub accounts (personal and professional, for example), make sure your `~/.ssh/config` file is correctly configured.
-
-**Clone the project with SSH:**
-
-```bash
-git clone git@github.com-personal:<your_username>/<project_name>.git
-# or for a professional account
-git clone git@github.com-pro:<your_username>/<project_name>.git
-```
-
-If your `~/.ssh/` directory does not contain the files listed above, you can either retrieve them from a backup or generate them again by following the actions below.
-
-**Generate a new SSH key:**
-
- ```bash
- ssh-keygen -t rsa -b 4096 -C "<YOUR_EMAIL_ADDRESS>"
- ```
-
-**Add the SSH key to the SSH agent:**
-
-```bash
-  eval "$(ssh-agent -s)"
-  ssh-add ~/.ssh/id_rsa_personal
-  ssh-add ~/.ssh/id_rsa_pro
-  ```
-
-**Add the SSH key to GitHub:**
-
-1. Go to your GitHub account settings, then to `SSH and GPG keys`.
-2. Click on `New SSH key`.
-3. Paste the previously exported SSH key into the `Key` field.
-
-### GPG Configuration
-Ensure you've configured your GPG key. You should have the following files in your ~/.gnupg/ directory:
-
-- `pubring.kbx`
-- `trustdb.gpg`
-
-If these files are not present, you can either retrieve them from a backup or generate them anew by following the steps below.
-
-**Import an existing GPG key:**
-
-```bash
-gpg --import <PATH_TO_KEY>
-```
-
-**Generate a new GPG key:**
-
-```bash
-gpg --full-generate-key
-```
-
-**List GPG keys:**
-
-```bash
-gpg --list-secret-keys --keyid-format LONG
-```
-
-**Export the GPG key:**
-
-```bash
-gpg --armor --export <KEY_ID>
-```
-
-**Add the GPG key to Git:**
-
-```bash
-git config --global user.signingkey <KEY_ID>
-```
-
-**Add the GPG key to GitHub:**
-
-1. Go to your GitHub account settings, then to SSH and GPG keys.
-2. Click on New GPG key.
-3. Paste the previously exported GPG key into the Key field.
-
-### CI Configuration
-
-1. **Write Access**: Make sure your CI pipeline has write access to your repository. Check the settings at [this URL](https://github.com/robjo82/ci-template/settings/actions).
-2. **Branch Rules for `main`**:
-    - Disallow `force-push`.
-    - Require code review before merging.
-    - Require CI to pass before merging.
-
----
-
-## Customization
-
-### Dockerfile
-- The `Dockerfile` is configured for a basic environment. Adapt the steps according to your application and programming language.
-
-### Procfile
-- The `Procfile` contains commented examples for different types of applications. Uncomment and modify the line that corresponds to your application.
-
-### Configuration Files
-- Modify configuration files like `.gitignore`, `package.json`, etc., according to your project needs.
-
----
-
-## NPM Scripts
-- `semantic-release`: To automate version management and package publishing. It is configured to run only on the `main` branch. The initial setup on version numbers is as follows: `1.0.0` for the first release, then `1.0.1` for bug fixes, `1.1.0` for new features, and `2.0.0` for major changes. For more information, consult the [semantic-release](https://semantic-release.gitbook.io/semantic-release/) documentation.
+Contributions are welcome! Please first create a branch with the name of the feature you want to add, then create a pull
+request to merge your branch into the `develop` branch.
 
 ---
 
@@ -237,30 +127,26 @@ This project is under the MIT license - see the [LICENSE](LICENSE) file for more
 
 # 
 
-# Nom du Projet
+# Othello AI
 
-Description du projet.
+Interface Pygame qui vous permet de jouer au jeu Othello avec des amis ou contre une IA.
+
+Notre objectif était d'appliquer les connaissances théoriques apprises sur ces différents algorithmes dits d'
+intelligence artificielle, comme Minimax ou l'élagage Alpha Beta, et de les analyser statistiquement pour comprendre
+lequel est le meilleur et pourquoi ?
 
 ## Sommaire
 
 - [Prérequis](#prérequis)
-- [Structure générale des projets](#structure-générale-des-projets)
-   - [Arborescence](#arborescence)
-   - [Description](#description)
-   - [Bonnes pratiques sur les branches](#bonnes-pratiques-sur-les-branches)
-   - [Bonnes pratiques sur les commits](#bonnes-pratiques-sur-les-commits)
-   - [Bonnes pratiques sur les pull requests](#bonnes-pratiques-sur-les-pull-requests)
-- [Étapes de Configuration](#étapes-de-configuration)
-   - [GitHub](#github)
-   - [SonarQube](#sonarqube)
-   - [Configuration SSH](#configuration-ssh)
-   - [Configuration GPG](#configuration-gpg)
-   - [Configuration CI](#configuration-ci)
-- [Personnalisation](#personnalisation)
-   - [Dockerfile](#dockerfile)
-   - [Procfile](#procfile)
-   - [Fichiers de Configuration](#fichiers-de-configuration)
-- [Scripts NPM](#scripts-npm)
+- [Caractéristiques](#caractéristiques)
+  - [Installation](#installation)
+  - [Modes de Jeu](#modes-de-jeu)
+  - [Algorithmes d'IA](#algorithmes-dia)
+- [Bonnes Pratiques](#bonnes-pratiques)
+  - [Bonnes Pratiques sur les Branches](#bonnes-pratiques-sur-les-branches)
+  - [Bonnes Pratiques sur les Commits](#bonnes-pratiques-sur-les-commits)
+  - [Bonnes Pratiques sur les Pull Requests](#bonnes-pratiques-sur-les-pull-requests)
+- [Contribuer](#contribuer)
 - [Licence](#licence)
 
 ---
@@ -278,39 +164,60 @@ Description du projet.
 - [Husky](https://typicode.github.io/husky/#/)
 - [Commitlint](https://commitlint.js.org/#/)
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+- [Python 3.X](https://www.python.org/)
+- [Pygame](https://www.pygame.org/news)
+
 ---
 
-## Structure générale des projets
+## Caractéristiques
 
-### Arborescence
-    
- ```
- .
- ├── .github
- │   ├── PULL_REQUEST_TEMPLATE
- │   │   └── pull_request_template.md
- │   └── workflows
- │       └── build.yml
- ├── src
- ├── .gitignore
- ├── Dockerfile
- ├── LICENSE
- ├── package.json
- ├── Procfile
- └── README.md
- ```
+### Installation
 
-### Description
+```bash
+git clone
+cd othello-ai
+pip install -r requirements.txt
+python src/main.py
+```
 
-- `pull_request_template.md` : Modèle de pull request.
-- `build.yml` : Pipeline de CI, basé sur GitHub Actions.
-- `src` : Dossier contenant le code source de l'application.
-- `.gitignore` : Fichier de configuration pour ignorer certains fichiers dans Git.
-- `Dockerfile` : Fichier de configuration pour créer une image Docker.
-- `LICENSE` : Fichier de licence.
-- `package.json` : Fichier de configuration pour NPM, notamment husky et semantic-release.
-- `Procfile` : Fichier de configuration pour Heroku.
-- `README.md` : Fichier de description du projet.
+### Modes de Jeu
+
+- **Joueur contre Joueur** : Jouez contre un ami sur le même ordinateur.
+- **Joueur contre IA** : Jouez contre une IA.
+- **IA contre IA** : Regardez deux IA jouer l'une contre l'autre.
+
+### Algorithmes d'IA
+
+**Minimax** :
+
+Minimax est un algorithme de recherche de décision pour les jeux à deux joueurs (comme les échecs, les dames, etc.).
+L'algorithme évalue les coups possibles et choisit le meilleur coup, en supposant que l'adversaire jouera également de
+manière optimale. Minimax utilise un arbre de jeu pour représenter les coups possibles et un système de profondeur pour
+limiter la recherche.
+
+Dans l'algorithme Minimax, deux types de nœuds sont évalués :
+
+Nœuds "Maximisants" : L'IA recherche le coup ayant la valeur maximale.
+
+Nœuds "Minimisants" : L'IA anticipe que l'adversaire choisira le coup ayant la valeur minimale.
+
+**Élagage Alpha-Beta** :
+
+L'élagage Alpha-Beta est une optimisation de l'algorithme Minimax qui réduit le nombre de nœuds évalués dans l'arbre de
+recherche. L'idée est de maintenir deux valeurs, Alpha et Beta, qui représentent respectivement la meilleure option pour
+le joueur jusqu'à présent et la meilleure option pour l'adversaire. Lors du parcours de l'arbre, les branches sont "
+coupées" ou ignorées dès qu'il est évident qu'elles ne produiront pas une meilleure décision que celle déjà trouvée.
+
+L'élagage Alpha-Beta permet de rechercher plus en profondeur dans l'arbre de jeu avec le même temps de calcul, ou de
+réduire le temps nécessaire pour une profondeur donnée.
+
+Les deux algorithmes sont souvent utilisés dans les programmes de jeu pour aider l'IA à décider quels coups faire. Ils
+sont particulièrement efficaces lorsque le jeu a un ensemble limité de coups possibles et des règles clairement définies
+pour gagner ou perdre.
+
+---
+
+## Bonnes Pratiques
 
 ### Bonnes pratiques sur les branches
 
@@ -333,142 +240,10 @@ Description du projet.
 
 ---
 
-## Étapes de Configuration
+## Contribuer
 
-### GitHub
-
-1. **Créer un nouveau dépôt sur GitHub** : Utilisez ce template pour créer un nouveau dépôt GitHub.
-
-2. **Clone du dépôt** : Clonez le dépôt sur votre machine locale.
-
-### SonarQube
-
-1. **Créer un Projet** : Allez sur votre instance SonarQube et créez un nouveau projet.
-
-2. **Générer une Clé** : Générez une clé d'API pour votre projet.
-
-3. **Créer un Secret GitHub** : Allez dans les paramètres de votre dépôt GitHub, puis dans `Secrets`, et créez un nouveau secret appelé `SONAR_TOKEN` avec la clé d'API générée.
-
-
-### Configuration SSH
-
-Pour cloner ce projet, assurez-vous d'avoir configuré vos clés SSH. Vous devrez avoir les fichiers suivants dans votre dossier `~/.ssh/` :
-
-- `config`
-- `id_rsa_personal`
-- `id_rsa_personal.pub`
-- `id_rsa_pro`
-- `id_rsa_pro.pub`
-- `known_hosts`
-
-Si vous utilisez plusieurs comptes GitHub (personnel et professionnel par exemple), assurez-vous que votre fichier `~/.ssh/config` est correctement configuré.
-
-**Cloner le projet avec SSH :**
-
-```bash
-git clone git@github.com-personal:<votre_nom_d_utilisateur>/<nom_du_projet>.git
-# ou pour un compte professionnel
-git clone git@github.com-pro:<votre_nom_d_utilisateur>/<nom_du_projet>.git
-```
-
-Si votre dossier `~/.ssh/` ne contient pas les fichiers listés ci-dessus, vous pouvez soit les récupérer depuis une sauvegarde, soit les générer à nouveau en suivant les actions ci-dessous.
-
-**Générer une nouvelle clé SSH :**
-
- ```bash
- ssh-keygen -t rsa -b 4096 -C "<VOTRE_ADRESSE_EMAIL>"
- ```
-
-**Ajouter la clé SSH à l'agent SSH :**
-
- ```bash
- eval "$(ssh-agent -s)"
- ssh-add ~/.ssh/id_rsa_personal
- ssh-add ~/.ssh/id_rsa_pro
- ```
-
-**Ajouter la clé SSH à GitHub :**
-
-1. Allez dans les paramètres de votre compte GitHub, puis dans `SSH and GPG keys`.
-2. Cliquez sur `New SSH key`.
-3. Collez la clé SSH exportée précédemment dans le champ `Key`.
-
-
-
-### Configuration GPG
-
-Assurez-vous d'avoir configuré votre clé GPG. Vous devrez avoir les fichiers suivants dans votre dossier `~/.gnupg/` :
-- `pubring.kbx`
-- `trustdb.gpg`
-  Si ces fichiers ne sont pas présents, vous pouvez soit les récupérer depuis une sauvegarde, soit les générer à nouveau en suivant les actions ci-dessous.
-
-**Importer une clé GPG existante :**
-
-```bash
-gpg --import <CHEMIN_VERS_LA_CLE>
-```
-
-**Générer une nouvelle clé GPG :**
-
-```bash
-gpg --full-generate-key
-```
-
-**Afficher les clés GPG :**
-
-```bash
-gpg --list-secret-keys --keyid-format LONG
-```
-
-**Exporter la clé GPG :**
-
-```bash
-gpg --armor --export <ID_DE_LA_CLE>
-```
-
-**Ajouter la clé GPG à Git :**
-
-```bash
-git config --global user.signingkey <ID_DE_LA_CLE>
-```
-
-**Ajouter la clé GPG à GitHub :**
-
-1. Allez dans les paramètres de votre compte GitHub, puis dans `SSH and GPG keys`.
-2. Cliquez sur `New GPG key`.
-3. Collez la clé GPG exportée précédemment dans le champ `Key`.
-
-
-### Configuration CI
-
-1. **Droits en Écriture** : Assurez-vous que votre pipeline de CI a les droits en écriture sur votre dépôt. Vérifiez les paramètres à [cette URL](https://github.com/robjo82/ci-template/settings/actions).
-
-2. **Règles de Branche pour `main`** :
-    - Interdisez les `force-push`.
-    - Exigez une revue de code avant de fusionner.
-    - Exigez que la CI soit réussie avant de pouvoir fusionner.
-
----
-
-## Personnalisation
-
-### Dockerfile
-
-- Le `Dockerfile` est configuré pour un environnement de base. Adaptez les étapes en fonction de votre application et de votre langage de programmation.
-
-### Procfile
-
-- Le `Procfile` contient des exemples commentés pour différents types d'applications. Décommentez et modifiez la ligne qui correspond à votre application.
-
-### Fichiers de Configuration
-
-- Modifiez les fichiers de configuration tels que `.gitignore`, `package.json`, etc., en fonction des besoins de votre projet.
-
----
-
-## Scripts NPM
-
-- `semantic-release`: Pour automatiser la gestion des versions et la publication du package. Il est configuré pour être exécuté sur la branche `main` uniquement. La configuration initiale sur les numéros de version est la suivante : `1.0.0` pour la première version, puis `1.0.1` pour les corrections de bugs, `1.1.0` pour les nouvelles fonctionnalités, et `2.0.0` pour les changements majeurs. Pour plus d'informations, consultez la documentation de [semantic-release](https://semantic-release.gitbook.io/semantic-release/).
+Les contributions sont les bienvenues ! Veuillez d'abord créer une branche avec le nom de la fonctionnalité que vous
+souhaitez ajouter, puis créer une pull request pour fusionner votre branche dans la branche `develop`.
 
 ---
 
