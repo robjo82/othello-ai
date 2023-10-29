@@ -1,4 +1,5 @@
 import copy
+import sys
 import time
 
 
@@ -166,6 +167,48 @@ def play_game():
         player_turn = 'B' if player_turn == 'W' else 'W'
 
 
+# Fonction principale pour jouer au jeu IA contre IA
+def play_game_ai_vs_ai():
+    board = init_board()
+    player_turn = 'W'
+
+    while True:
+        display_board(board)
+        print(f"{player_turn}'s turn:")
+        timeout = time.time() + 2  # 2 secondes de time-out pour l'IA
+        _, (x, y) = minmax_with_memory(board, 3, player_turn == 'W', player_turn, timeout)
+        if x is None and y is None:
+            print(f"{player_turn} timeout. Game over!")
+            break
+
+        make_move(board, x, y, player_turn)
+
+        # Pause pour faciliter l'analyse
+        time.sleep(1)
+
+        # Vérification de la fin du jeu
+        if all(cell != ' ' for row in board for cell in row):
+            w_score = sum(cell == 'W' for row in board for cell in row)
+            b_score = sum(cell == 'B' for row in board for cell in row)
+            print(f"Final scores - W: {w_score}, B: {b_score}")
+            if w_score > b_score:
+                print("W wins!")
+            elif b_score > w_score:
+                print("B wins!")
+            else:
+                print("It's a tie!")
+            break
+
+        player_turn = 'B' if player_turn == 'W' else 'W'
+
+
 # Jouer au jeu
 if __name__ == '__main__':
-    play_game()
+    mode = input("Choose game mode (human or ai): ")
+    if mode == 'human':
+        play_game()
+    elif mode == 'ai':
+        play_game_ai_vs_ai()
+    else:
+        print("Invalid mode. Exiting.")
+        sys.exit(1)
