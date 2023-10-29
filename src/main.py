@@ -1,5 +1,4 @@
 import copy
-import sys
 import time
 
 
@@ -23,28 +22,44 @@ def display_board(board):
 
 # Vérification de la validité d'un mouvement
 def is_valid_move(board, x, y, player):
+    # Détermine la couleur de l'adversaire
     opponent = 'W' if player == 'B' else 'B'
-    if board[x][y] != ' ':
-        return False, []
 
+    # Vérifie si la case est déjà occupée
+    if board[x][y] != ' ':
+        return False, []  # Le coup n'est pas valide, pas de cellules retournées
+
+    # Liste des huit directions possibles (voisins)
     directions = [(dx, dy) for dx in [-1, 0, 1] for dy in [-1, 0, 1] if dx != 0 or dy != 0]
+
+    # Liste pour stocker les cellules à retourner
     flipped_cells = []
 
+    # Parcours de chaque direction possible
     for dx, dy in directions:
+        # Initialise une liste pour les cellules à retourner dans cette direction
         temp_flips = []
+        # Déplacement initial à partir de la case de départ (x, y)
         nx, ny = x + dx, y + dy
+
+        # Tant que les coordonnées sont à l'intérieur du plateau
         while 0 <= nx < 8 and 0 <= ny < 8:
             if board[nx][ny] == opponent:
+                # Ajoute les coordonnées de l'adversaire à la liste temporaire
                 temp_flips.append((nx, ny))
             elif board[nx][ny] == player:
                 if temp_flips:
+                    # S'il y a des cellules adverses entre les cellules du joueur actuel,
+                    # ajoute-les à la liste des cellules à retourner
                     flipped_cells.extend(temp_flips)
                 break
             else:
-                break
+                break  # La case est vide, donc le coup n'est pas valide
+            # Met à jour les coordonnées pour passer à la case suivante dans la direction
             nx += dx
             ny += dy
 
+    # Le coup est valide s'il y a des cellules à retourner
     return len(flipped_cells) > 0, flipped_cells
 
 
@@ -69,49 +84,185 @@ def evaluate_board(board, player):
 memo = {}
 
 
+def has_valid_move(board, player):
+    taille_grille = len(board)
+
+    for row in range(taille_grille):
+        for col in range(taille_grille):
+            if is_valid_move(board, row, col, player)[0]:
+                return True
+
+    return False
+
+
 # Algorithme Min-Max avec time-out et mémoire
-def minmax_with_memory(board, depth, maximizing, player, timeout):
-    if time.time() > timeout:
-        return None, None
+# def minmax_with_memory(board, depth, maximizing, player, timeout):
+#     if time.time() > timeout:
+#         return None, None
+
+#     board_str = ''.join(''.join(row) for row in board) + player
+#     if board_str in memo:
+#         return memo[board_str]
+
+#     if depth == 0:
+#         score = evaluate_board(board, player)
+#         memo[board_str] = score, None
+#         return score, None
+
+#     opponent = 'W' if player == 'B' else 'B'
+#     best_move = None
+
+#     if maximizing:
+#         max_eval = float('-inf')
+#         for x in range(8):
+#             for y in range(8):
+#                 new_board = copy.deepcopy(board)
+#                 if make_move(new_board, x, y, player):
+#                     eval_value, _ = minmax_with_memory(new_board, depth - 1, False, player, timeout)
+#                     if eval_value is None:  # Timeout occurred
+#                         return None, None
+#                     if eval_value > max_eval:
+#                         max_eval = eval_value
+#                         best_move = (x, y)
+#         memo[board_str] = max_eval, best_move
+#         return max_eval, best_move
+#     else:
+#         min_eval = float('inf')
+#         for x in range(8):
+#             for y in range(8):
+#                 new_board = copy.deepcopy(board)
+#                 if make_move(new_board, x, y, opponent):
+#                     eval_value, _ = minmax_with_memory(new_board, depth - 1, True, player, timeout)
+#                     if eval_value is None:  # Timeout occurred
+#                         return None, None
+#                     if eval_value < min_eval:
+#                         min_eval = eval_value
+#                         best_move = (x, y)
+#         memo[board_str] = min_eval, best_move
+#         return min_eval, best_move
+
+# def minmax_with_memory(board, depth, maximizing, player, timeout):
+#     # Vérifie si le temps est écoulé (timeout) et renvoie un résultat vide si c'est le cas
+#     if time.time() > timeout:
+#         return None, None  # Timeout occurred
+
+#     # Convertit le plateau de jeu en une chaîne pour stockage dans la mémoire (hash)
+#     board_str = ''.join(''.join(row) for row in board) + player
+#     # Si la configuration du plateau est déjà en mémoire, renvoie le résultat mémorisé
+#     if board_str in memo:
+#         return memo[board_str]
+
+#     # Cas de base : si la profondeur d'exploration est de zéro, renvoie l'évaluation du plateau actuel
+#     if depth == 0:
+#         score = evaluate_board(board, player)
+#         # Stocke le résultat en mémoire pour éviter de le recalculer
+#         memo[board_str] = score, None
+#         return score, None
+
+#     # Détermine l'opposant du joueur actuel
+#     opponent = 'W' if player == 'B' else 'B'
+#     best_move = None
+#     possible_moves = []  # Liste des mouvements possibles
+
+#     # Si on maximise, c'est le tour du joueur actuel
+#     if maximizing:
+#         max_eval = float('-inf')
+#         for x in range(8):
+#             for y in range(8):
+#                 new_board = copy.deepcopy(board)
+#                 if make_move(new_board, x, y, player):
+#                     # Appelle récursivement la fonction pour évaluer le mouvement
+#                     eval_value, _ = minmax_with_memory(new_board, depth - 1, False, player, timeout)
+#                     if eval_value is None:  # Si un timeout s'est produit, ajoute la position à la liste
+#                         possible_moves.append((x, y))
+#                     elif eval_value > max_eval:
+#                         max_eval = eval_value
+#                         best_move = (x, y)
+#         # Si aucun meilleur mouvement n'a été trouvé, joue la première position possible
+#         if best_move is None and possible_moves:
+#             best_move = possible_moves[0]
+#             # Évalue le plateau actuel pour stockage en mémoire
+#             max_eval = evaluate_board(board, player)
+#         # Stocke le résultat en mémoire
+#         memo[board_str] = max_eval, best_move
+#         return max_eval, best_move
+#     # Si on minimise, c'est le tour de l'opposant
+#     else:
+#         min_eval = float('inf')
+#         for x in range(8):
+#             for y in range(8):
+#                 new_board = copy.deepcopy(board)
+#                 if make_move(new_board, x, y, opponent):
+#                     # Appelle récursivement la fonction pour évaluer le mouvement
+#                     eval_value, _ = minmax_with_memory(new_board, depth - 1, True, player, timeout)
+#                     if eval_value is None:  # Si un timeout s'est produit, ajoute la position à la liste
+#                         possible_moves.append((x, y))
+#                     elif eval_value < min_eval:
+#                         min_eval = eval_value
+#                         best_move = (x, y)
+#         # Si aucun meilleur mouvement n'a été trouvé, joue la première position possible
+#         if best_move is None and possible_moves:
+#             best_move = possible_moves[0]
+#             # Évalue le plateau actuel pour stockage en mémoire
+#             min_eval = evaluate_board(board, player)
+#         # Stocke le résultat en mémoire
+#         memo[board_str] = min_eval, best_move
+#         return min_eval, best_move
+
+MAX_SCORE = 1000000  # Choisissez une valeur appropriée pour MAX_SCORE
+
+
+def minmax_with_memory(board, depth, maximizing, player, timeout, possible_moves):
+    if depth == 0:
+        return evaluate_board(board, player), None
+
+    if time.time() >= timeout:
+        if not possible_moves:
+            return evaluate_board(board, player), (-1, -1)
+
+        best_move = possible_moves[0]
+        return evaluate_board(board, player), best_move
 
     board_str = ''.join(''.join(row) for row in board) + player
+
     if board_str in memo:
         return memo[board_str]
-
-    if depth == 0:
-        score = evaluate_board(board, player)
-        memo[board_str] = score, None
-        return score, None
 
     opponent = 'W' if player == 'B' else 'B'
     best_move = None
 
     if maximizing:
-        max_eval = float('-inf')
-        for x in range(8):
-            for y in range(8):
-                new_board = copy.deepcopy(board)
-                if make_move(new_board, x, y, player):
-                    eval_value, _ = minmax_with_memory(new_board, depth - 1, False, player, timeout)
-                    if eval_value is None:  # Timeout occurred
-                        return None, None
-                    if eval_value > max_eval:
-                        max_eval = eval_value
-                        best_move = (x, y)
+        max_eval = -MAX_SCORE
+        for move in possible_moves:
+            x, y = move
+            new_board = copy.deepcopy(board)
+            if make_move(new_board, x, y, player):
+                eval_value, _ = minmax_with_memory(new_board, depth - 1, False, player, timeout, possible_moves)
+                if eval_value is None:
+                    possible_moves.append((x, y))
+                elif eval_value > max_eval:
+                    max_eval = eval_value
+                    best_move = (x, y)
+        if best_move is None:
+            best_move = possible_moves[0]
+            max_eval = evaluate_board(board, player)
         memo[board_str] = max_eval, best_move
         return max_eval, best_move
     else:
-        min_eval = float('inf')
-        for x in range(8):
-            for y in range(8):
-                new_board = copy.deepcopy(board)
-                if make_move(new_board, x, y, opponent):
-                    eval_value, _ = minmax_with_memory(new_board, depth - 1, True, player, timeout)
-                    if eval_value is None:  # Timeout occurred
-                        return None, None
-                    if eval_value < min_eval:
-                        min_eval = eval_value
-                        best_move = (x, y)
+        min_eval = MAX_SCORE
+        for move in possible_moves:
+            x, y = move
+            new_board = copy.deepcopy(board)
+            if make_move(new_board, x, y, opponent):
+                eval_value, _ = minmax_with_memory(new_board, depth - 1, True, player, timeout, possible_moves)
+                if eval_value is None:
+                    possible_moves.append((x, y))
+                elif eval_value < min_eval:
+                    min_eval = eval_value
+                    best_move = (x, y)
+        if best_move is None:
+            best_move = possible_moves[0]
+            min_eval = evaluate_board(board, player)
         memo[board_str] = min_eval, best_move
         return min_eval, best_move
 
@@ -128,6 +279,15 @@ def get_human_move(board, player):
                 print("Invalid move. Try again.")
         except ValueError:
             print("Invalid input. Please enter two integers separated by a space.")
+
+
+def positions_jouables(board, player):
+    positions = []
+    for x in range(8):
+        for y in range(8):
+            if is_valid_move(board, x, y, player)[0]:
+                positions.append((x, y))
+    return positions
 
 
 # Fonction principale pour jouer au jeu
@@ -201,14 +361,13 @@ def play_game_ai_vs_ai():
 
         player_turn = 'B' if player_turn == 'W' else 'W'
 
-
 # Jouer au jeu
-if __name__ == '__main__':
-    mode = input("Choose game mode (human or ai): ")
-    if mode == 'human':
-        play_game()
-    elif mode == 'ai':
-        play_game_ai_vs_ai()
-    else:
-        print("Invalid mode. Exiting.")
-        sys.exit(1)
+# if __name__ == '__main__':
+#     mode = input("Choose game mode (human or ai): ")
+#     if mode == 'human':
+#         play_game()
+#     elif mode == 'ai':
+#         play_game_ai_vs_ai()
+#     else:
+#         print("Invalid mode. Exiting.")
+#         sys.exit(1)
