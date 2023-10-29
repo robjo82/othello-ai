@@ -41,6 +41,7 @@ pipx==1.2.1
 ptyprocess==0.7.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.1
+pycairo==1.25.1
 pygame==2.5.2
 Pygments==2.11.2
 PyGObject==3.42.1
