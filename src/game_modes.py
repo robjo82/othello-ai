@@ -11,7 +11,7 @@ pygame.init()
 
 # Paramètres de la fenêtre
 largeur, hauteur = 800, 600
-window = pygame.display.set_mode((largeur, hauteur))
+fenetre = pygame.display.set_mode((largeur, hauteur))
 pygame.display.set_caption("Jeu Othello")
 
 # Couleurs
@@ -31,8 +31,8 @@ titre_rect.center = (largeur // 2, 50)
 
 
 def afficher_grille(board):
-    window.fill(vert)
-    window.blit(titre, titre_rect)  # Affichage du titre en haut
+    fenetre.fill(vert)
+    fenetre.blit(titre, titre_rect)  # Affichage du titre en haut
 
     taille_grille = len(board)
     taille_case = 50
@@ -47,13 +47,13 @@ def afficher_grille(board):
             y = y_debut + row * taille_case
 
             # Dessiner un rectangle autour de chaque case
-            pygame.draw.rect(window, bleu_clair, (x, y, taille_case, taille_case), 1)
+            pygame.draw.rect(fenetre, bleu_clair, (x, y, taille_case, taille_case), 1)
 
             # Dessiner les pions
             if board[row][col] == 'B':
-                pygame.draw.circle(window, noir, (x + taille_case // 2, y + taille_case // 2), taille_case // 2 - 5)
+                pygame.draw.circle(fenetre, noir, (x + taille_case // 2, y + taille_case // 2), taille_case // 2 - 5)
             elif board[row][col] == 'W':
-                pygame.draw.circle(window, blanc, (x + taille_case // 2, y + taille_case // 2), taille_case // 2 - 5)
+                pygame.draw.circle(fenetre, blanc, (x + taille_case // 2, y + taille_case // 2), taille_case // 2 - 5)
 
 
 def afficher_info(tour, pions_noirs, pions_blancs, player_turn):
@@ -61,40 +61,40 @@ def afficher_info(tour, pions_noirs, pions_blancs, player_turn):
     tour_texte = police.render(f"Tour : {tour}", True, noir)
     tour_texte_rect = tour_texte.get_rect()
     tour_texte_rect.topright = (largeur - 20, 20)
-    window.blit(tour_texte, tour_texte_rect)
+    fenetre.blit(tour_texte, tour_texte_rect)
 
     # Affichage du nombre de pions noirs et blancs
     pions_noirs_texte = police.render(f"Noirs : {pions_noirs}", True, noir)
     pions_noirs_texte_rect = pions_noirs_texte.get_rect()
     pions_noirs_texte_rect.topright = (largeur - 20, 60)
-    window.blit(pions_noirs_texte, pions_noirs_texte_rect)
+    fenetre.blit(pions_noirs_texte, pions_noirs_texte_rect)
 
     pions_blancs_texte = police.render(f"Blancs : {pions_blancs}", True, noir)
     pions_blancs_texte_rect = pions_blancs_texte.get_rect()
     pions_blancs_texte_rect.topright = (largeur - 20, 100)
-    window.blit(pions_blancs_texte, pions_blancs_texte_rect)
+    fenetre.blit(pions_blancs_texte, pions_blancs_texte_rect)
 
     # Affichage du joueur actuel
     joueur_texte = police.render(f"Joueur : {player_turn}", True, noir)
     joueur_texte_rect = joueur_texte.get_rect()
     joueur_texte_rect.topright = (largeur - 20, 140)
-    window.blit(joueur_texte, joueur_texte_rect)
+    fenetre.blit(joueur_texte, joueur_texte_rect)
 
     # Bouton "Retour" sous la grille de jeu
-    pygame.draw.rect(window, bleu_clair, (largeur - 100, hauteur - 60, 80, 40))
+    pygame.draw.rect(fenetre, bleu_clair, (largeur - 100, hauteur - 60, 80, 40))
     retour_texte = police.render("Retour", True, noir)
     retour_texte_rect = retour_texte.get_rect()
     retour_texte_rect.center = (largeur - 60, hauteur - 40)
-    window.blit(retour_texte, retour_texte_rect)
+    fenetre.blit(retour_texte, retour_texte_rect)
 
 
 def afficher_bouton_rejouer():
     # Bouton "Rejouer" sous la grille de jeu
-    pygame.draw.rect(window, bleu_clair, (largeur - 100, hauteur - 60, 80, 40))
+    pygame.draw.rect(fenetre, bleu_clair, (largeur - 100, hauteur - 60, 80, 40))
     retour_texte = police.render("Rejouer", True, noir)
     retour_texte_rect = retour_texte.get_rect()
     retour_texte_rect.center = (largeur - 60, hauteur - 40)
-    window.blit(retour_texte, retour_texte_rect)
+    fenetre.blit(retour_texte, retour_texte_rect)
 
 
 def afficher_victoire(board, player):
@@ -103,7 +103,7 @@ def afficher_victoire(board, player):
 
     afficher_grille(board)
     # Remplissez le rectangle avec une couleur de fond
-    pygame.draw.rect(window, vert, victoire_rect)
+    pygame.draw.rect(fenetre, vert, victoire_rect)
 
     # Utilisez la police de texte pour afficher le message de victoire
     if player == 'Egalité':
@@ -116,7 +116,7 @@ def afficher_victoire(board, player):
     victoire_texte_rect.center = victoire_rect.center
 
     # Affichez le texte de victoire dans le rectangle
-    window.blit(victoire_texte, victoire_texte_rect)
+    fenetre.blit(victoire_texte, victoire_texte_rect)
 
 
 def game_pvp():
@@ -186,7 +186,7 @@ def game_pvp():
                 afficher_info(tour, pions_noirs, pions_blancs, player_turn)
             pygame.display.flip()
             pygame.time.delay(5000)  # Pause de 3 secondes pour afficher le résultat
-            # return # Sortez de la boucle de jeu
+            # return  # Sortez de la boucle de jeu
         elif not main.has_valid_move(board, 'B') and player_turn == 'B':
             print("changement de joueur de B à W")
             player_turn = 'W'
@@ -272,7 +272,7 @@ def game_pvai():
         if player_turn == 'B':
             timeout = time.time() + 5  # 2 secondes de time-out pour l'IA
             possible_moves = main.positions_jouables(board, 'B')
-            result = main.minmax_with_memory(board, 3, True, 'B', timeout, possible_moves)
+            result = main.minmax_with_memory(board, 5, True, 'B', timeout, possible_moves)
             print(result)
             if result is None or result[1] is None or result[1][0] is None or result[1][1] is None or result[0] is None:
                 afficher_victoire(board, 'Timeout')
